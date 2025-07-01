@@ -1,0 +1,5 @@
+name: Visient
+version: '${project.version}'
+main: ai.visient.VisientPlugin
+authors: [ infiniteSM ]
+description: Prototype machine learning aimbot detection.
