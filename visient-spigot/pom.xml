@@ -42,7 +42,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.apache.http</pattern>
-                                    <shadedPattern>com.gladurbad.shaded.http</shadedPattern>
+                                    <shadedPattern>ai.visient.http</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

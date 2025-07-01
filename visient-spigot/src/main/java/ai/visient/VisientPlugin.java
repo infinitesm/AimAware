@@ -1,48 +1,47 @@
 package ai.visient;
 
+import ai.visient.command.manager.CommandManager;
+import ai.visient.network.client.AsyncJsonClient;
 import ai.visient.profile.manager.ProfileManager;
-import ai.visient.util.AsyncJsonClient;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@Getter
-public final class VisientPlugin extends JavaPlugin implements Listener {
+public final class VisientPlugin extends JavaPlugin {
 
-    private ProfileManager playerProfileManager;
+    private static final String INFERENCE_URL = "";
+    private static final String COLLECTION_URL = "";
+
+    @Getter
+    private ProfileManager profileManager;
+
+    @Getter
     private AsyncJsonClient asyncJsonClient;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        Visient.setPlugin(this);
+        // Instantiate core dependencies
+        this.profileManager = new ProfileManager(this);
 
-        playerProfileManager = new ProfileManager();
+        CommandManager commandManager = new CommandManager(profileManager);
+        commandManager.init();
 
-        Bukkit.getPluginManager().registerEvents(this, this);
+        this.asyncJsonClient = new AsyncJsonClient(INFERENCE_URL, COLLECTION_URL);
+        this.asyncJsonClient.open();
 
-        asyncJsonClient = new AsyncJsonClient();
-        asyncJsonClient.open();
+        // Register listeners and inject dependencies
+        this.getServer().getPluginManager().registerEvents(profileManager, this);
+
+        // Register main command for command manager
+        this.getCommand("visient").setExecutor(commandManager);
+
+        this.getLogger().info("Visient enabled successfully.");
     }
 
     @Override
     public void onDisable() {
+        this.getLogger().info("Visient disabled successfully.");
+
+        // Close open client connection.
         asyncJsonClient.close();
     }
-
-    @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        playerProfileManager.get(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        playerProfileManager.remove(event.getPlayer());
-    }
-
-
 }

@@ -3,3 +3,8 @@ version: '${project.version}'
 main: ai.visient.VisientPlugin
 authors: [ infiniteSM ]
 description: Prototype machine learning aimbot detection.
+commands:
+  visient:
+    description: Visient command API
+    usage: /<command> <subcommand>
+
