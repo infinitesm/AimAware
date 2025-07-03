@@ -14,6 +14,9 @@ import ai.visient.profile.tracker.impl.position.PositionTracker;
 import ai.visient.profile.tracker.impl.position.util.PlayerLocation;
 import net.minecraft.server.v1_8_R3.MathHelper;
 
+/**
+ * Tracks all mouse movements and aiming data onto a target.
+ */
 public class MouseTracker extends Tracker implements PacketHandler {
 
     private TrackedEntity target;
@@ -34,6 +37,11 @@ public class MouseTracker extends Tracker implements PacketHandler {
         }
     }
 
+    /**
+     * Update the mouse tracker.
+     * @param to current player location
+     * @param from previous player location
+     */
     public void update(PlayerLocation to, PlayerLocation from) {
         float deltaYaw = to.getYaw() - from.getYaw();
         float deltaPitch = to.getPitch() - from.getPitch();
@@ -44,12 +52,15 @@ public class MouseTracker extends Tracker implements PacketHandler {
             return;
         }
 
+        // 2nd kinematic derivative using finite differences
         float accelerationYaw = deltaYaw - lastDeltaYaw;
         float accelerationPitch = deltaPitch - lastDeltaPitch;
 
+        // Calculate target relevant info
         double offsetAngle = computeOffsetAngle(from, target.revealBounds(), to.getYaw());
         double[] intercepts = computeIntercepts(to);
 
+        // Build the mouse snapshot
         MouseSnapshot snapshot = MouseSnapshot.builder()
                 .targetBox(target.revealBounds().copy())
                 .deltaYaw(deltaYaw)
@@ -61,8 +72,10 @@ public class MouseTracker extends Tracker implements PacketHandler {
                 .offsetFromCenter(offsetAngle)
                 .build();
 
+        // Pass through relay manager for further handling
         profile.getRelayManager().handle(snapshot);
 
+        // Update the previous deltas for next tick calculation
         lastDeltaYaw = deltaYaw;
         lastDeltaPitch = deltaPitch;
     }
@@ -81,6 +94,8 @@ public class MouseTracker extends Tracker implements PacketHandler {
 
     /**
      * Computes intercept percentages (X,Y) of the player’s aim on the target bounding box.
+     * This is kind of a jank method, but actually works quite well for our application since it lets us calculate
+     * out of box "intercepts"
      */
     private double[] computeIntercepts(PlayerLocation to) {
         Vertex[] vertices = generateBoundingBoxVertices();

@@ -6,10 +6,10 @@ import org.bukkit.ChatColor;
 
 @UtilityClass
 public class DebugUtil {
-    // It's not the best looking thing, but it will work for a prototype.
-    public void debugInference(String name, String prediction, double confidence) {
-        String format = "&aV &7> &fInference for %s > %s, &cconfidence: %.4f ";
-        format = String.format(format, name, prediction, confidence);
+    // TODO: Clean this up, this class shouldn't be necessary.
+    public void debugInference(String name, String prediction, double confidence, double threshold) {
+        String format = "&d[Visient] &e%s &d> &e%s &d(C: %.2f%%, T: %.2f)";
+        format = String.format(format, name, prediction, confidence * 100.0, threshold);
         format = ChatColor.translateAlternateColorCodes('&', format);
         Bukkit.broadcastMessage(format);
     }

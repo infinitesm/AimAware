@@ -6,6 +6,9 @@ import ai.visient.profile.tracker.impl.info.enums.RelayMode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Holder for various crucial information related to the player.
+ */
 @Getter
 @Setter
 public class InfoTracker extends Tracker {
@@ -15,4 +18,5 @@ public class InfoTracker extends Tracker {
     }
 
     private RelayMode relayMode = RelayMode.NONE;
+    private String collectionConfig = "";
 }

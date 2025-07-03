@@ -30,6 +30,10 @@ public class TrackerManager {
                 .build();
     }
 
+    /**
+     * Handle all packets before relay manager execution
+     * @param packet NMS packet wrapper
+     */
     public void handlePacket(WrappedPacket packet) {
         Collection<Tracker> trackers = trackerMap.values();
 
@@ -40,6 +44,11 @@ public class TrackerManager {
         }
     }
 
+    /**
+     * Handle all packets after relay manager execution
+     * TODO: Only really useful for entity tracker, can possibly streamline this.
+     * @param packet NMS packet wrapper
+     */
     public void handlePostPacket(WrappedPacket packet) {
         Collection<Tracker> trackers = trackerMap.values();
 

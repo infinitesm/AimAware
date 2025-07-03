@@ -1,21 +1,66 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
-import numpy as np
 import json
+import pandas as pd
+import os
 
-# Load trained model
-model = joblib.load("model.pkl")
+# ------------------------------
+# Load model and scaler
+# ------------------------------
 
-# Load scaler
-scaler = joblib.load("scaler.pkl")
+# Get current file path
+server_dir = os.path.dirname(__file__)
 
+# Go one directory up
+project_root = os.path.abspath(os.path.join(server_dir, ".."))
+
+# Point to visient-training
+training_dir = os.path.join(project_root, "visient-training")
+
+# Create data file path
+data_file_path = os.path.join(training_dir, "visient_data.jsonl")
+
+# Now load model related files
+model = joblib.load(os.path.join(training_dir, "visient_model.pkl"))
+scaler = joblib.load(os.path.join(training_dir, "visient_scaler.pkl"))
+feature_order = joblib.load(os.path.join(training_dir, "trained_feature_order.pkl"))
+
+# ------------------------------
 # Define FastAPI app
+# ------------------------------
+
 app = FastAPI()
+
+# ------------------------------
+# Model diagnostics for debugging
+# ------------------------------
+
+@app.on_event("startup")
+def model_diagnostics():
+    print("Inference server initialized.")
+
+    # Model info
+    print(f"Model type: {type(model).__name__}")
+    if hasattr(model, 'classes_'):
+        print(f"Classes: {model.classes_}")
+    if hasattr(model, 'n_features_in_'):
+        print(f"Input features: {model.n_features_in_}")
+
+    # Scaler info
+    print(f"Scaler type: {type(scaler).__name__}")
+    if hasattr(scaler, 'n_features_in_'):
+        print(f"Scaler expects: {scaler.n_features_in_} features")
+
+    # Try to print feature names if possible
+    if hasattr(scaler, 'feature_names_in_'):
+        print(f"Feature columns: {list(scaler.feature_names_in_)}")
+    else:
+        print("Feature columns: (not available)")
 
 
 # ------------------------------
-# DATA MODELS
+# Data structures
 # ------------------------------
 
 class PredictRequest(BaseModel):
@@ -25,25 +70,30 @@ class PredictRequest(BaseModel):
 
 class CollectRequest(BaseModel):
     uuid: str
+    config: str
     signals: dict[str, list[float]]
     features: dict[str, float]
 
 
 # ------------------------------
-# INFERENCE ENDPOINT
+# Endpoint for live inferencing on new data.
 # ------------------------------
 
 @app.post("/predict")
 def predict(request: PredictRequest):
     try:
-        # Convert features dict to array (ordered by key for consistency)
-        feature_names = sorted(request.features.keys())
-        feature_values = [request.features[name] for name in feature_names]
 
-        X = np.array([feature_values])
+        # Get expected feature order from scaler
+        feature_order = list(scaler.feature_names_in_)
 
-        # Scale input
-        X_scaled = scaler.transform(X)
+        # Extract feature values in correct order
+        feature_values = [request.features[name] for name in feature_order]
+
+        # Create a DataFrame to preserve column names for StandardScaler
+        X_df = pd.DataFrame([feature_values], columns=feature_order)
+
+        # Scale the input using the trained scaler
+        X_scaled = scaler.transform(X_df)
 
         # Predict
         prediction = model.predict(X_scaled)[0]
@@ -60,21 +110,21 @@ def predict(request: PredictRequest):
 
 
 # ------------------------------
-# COLLECTION ENDPOINT
+# Endpoint for collecting data into the dataset
 # ------------------------------
 
 @app.post("/collect")
 def collect(request: CollectRequest):
     try:
-        # For now, just save each record to a JSONL file
         record = {
             "uuid": request.uuid,
-            "signals": request.raw_signals,
+            "config": request.config,
+            "signals": request.signals,
             "features": request.features
         }
 
-        # Append to file
-        with open("visient_data.jsonl", "a") as f:
+        # Collect the data as JSON
+        with open(data_file_path, "a") as f:
             json.dump(record, f)
             f.write("\n")
 
@@ -82,3 +132,12 @@ def collect(request: CollectRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ------------------------------
+# Run this to start the Visient server.
+# ------------------------------
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)

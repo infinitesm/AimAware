@@ -2,6 +2,9 @@ package ai.visient.profile.tracker.impl.mouse.util;
 
 import lombok.Getter;
 
+/**
+ * 3D point in Euclidean space.
+ */
 @Getter
 public class Vertex {
     private final double x, y, z;

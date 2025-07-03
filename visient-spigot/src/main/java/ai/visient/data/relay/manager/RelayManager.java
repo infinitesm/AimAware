@@ -188,6 +188,7 @@ public class RelayManager {
 
     /**
      * Determines if the tracked target is in range.
+     * Assume that if the target is outside of this range, the aiming pattern is less relevant.
      *
      * @return true if target is in range
      */

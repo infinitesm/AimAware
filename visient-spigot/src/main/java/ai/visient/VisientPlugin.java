@@ -8,8 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class VisientPlugin extends JavaPlugin {
 
-    private static final String INFERENCE_URL = "";
-    private static final String COLLECTION_URL = "";
+    private static final String INFERENCE_URL = "http://127.0.0.1:8000/predict";
+    private static final String COLLECTION_URL = "http://127.0.0.1:8000/collect";
 
     @Getter
     private ProfileManager profileManager;

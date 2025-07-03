@@ -17,11 +17,14 @@ import java.util.Deque;
 @Getter
 public class PositionTracker extends Tracker implements PacketHandler {
 
+    // Teleports double ended queue for teleport tracking
     private final Deque<Vector> teleports = Lists.newLinkedList();
 
+    // Location data
     private PlayerLocation from;
     private PlayerLocation to;
 
+    // Various other data
     private double lastDistance;
     private int lastTeleportTick;
     private boolean teleporting;
@@ -30,6 +33,10 @@ public class PositionTracker extends Tracker implements PacketHandler {
         super(profile);
     }
 
+    /**
+     * Packet routing for the position tracker
+     * @param packet NMS packet wrapper
+     */
     @Override
     public void process(WrappedPacket packet) {
         if (packet instanceof CPacketFlying) {
@@ -43,15 +50,16 @@ public class PositionTracker extends Tracker implements PacketHandler {
     }
 
     private void handleFlyingPacket(CPacketFlying wrapper) {
+        // Teleporting status only lasts one tick to prevent extra leniency.
         teleporting = false;
 
-        // shift last known "to" location to "from"
+        // Shift last known "to" location to "from"
         if (to != null) {
             from = to.copy();
         }
 
         if (to == null) {
-            // first packet seen, initialize
+            // First packet seen, initialize
             to = new PlayerLocation(
                     wrapper.getX(),
                     wrapper.getY(),
@@ -99,7 +107,8 @@ public class PositionTracker extends Tracker implements PacketHandler {
             Vector current = new Vector(to.getX(), to.getY(), to.getZ());
 
             // Confirm teleport only if player reached the precise coords
-            if (queuedTeleport.distanceSquared(current) == 0) {
+            // TODO: The extra leniency is arbitrary, you can probably check for an exact match.
+            if (queuedTeleport.distanceSquared(current) < 1e-7) {
                 teleports.poll();
                 teleporting = true;
                 lastTeleportTick = profile.getTick();

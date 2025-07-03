@@ -9,12 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Sub command used to swap between inference and data collection mode
+ */
 public class ModeCommand implements CommandHandler {
 
     @Override
     public void execute(Profile profile, List<String> args) {
-        if (args.size() != 1) {
-            profile.getPlayer().sendMessage("§cUsage: /visient mode <inference|collection>");
+        if (args.isEmpty()) {
+            profile.message("&cUsage: /visient mode <inference|collection <configName>>");
             return;
         }
 
@@ -27,9 +30,16 @@ public class ModeCommand implements CommandHandler {
         if (relayMode.isPresent()) {
             InfoTracker tracker = profile.getTracker(InfoTracker.class);
             tracker.setRelayMode(relayMode.get());
-            profile.getPlayer().sendMessage("§aRelay mode set to: " + relayMode.get().name());
+            profile.message("&aRelay mode set to: " + relayMode.get().name());
+
+            if (relayMode.get() == RelayMode.COLLECTION) {
+                String config = args.get(1);
+                tracker.setCollectionConfig(config);
+
+                profile.message("&aCollection config set to: " + config);
+            }
         } else {
-            profile.getPlayer().sendMessage("§cInvalid relay mode!");
+            profile.getPlayer().sendMessage("&cInvalid relay mode!");
         }
     }
 }

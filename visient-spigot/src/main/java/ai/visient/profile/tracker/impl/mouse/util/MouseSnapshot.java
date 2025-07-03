@@ -4,6 +4,9 @@ import ai.visient.profile.tracker.impl.entity.util.BoundingBox;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * Holder for information relevant to how a player aimed, especially in relation to a current target.
+ */
 @Getter
 @Builder
 public class MouseSnapshot {

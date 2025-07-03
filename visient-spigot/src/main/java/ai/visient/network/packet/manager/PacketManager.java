@@ -179,9 +179,7 @@ public class PacketManager {
             if (clazz.isInstance(packet)) {
                 return handler.apply(clazz.cast(packet));
             } else {
-                throw new IllegalArgumentException(
-                        "Handler for " + clazz.getName() + " cannot handle packet of type " + packet.getClass().getName()
-                );
+                throw new IllegalArgumentException("Handler for " + clazz.getName() + " cannot handle packet of type " + packet.getClass().getName());
             }
         };
 

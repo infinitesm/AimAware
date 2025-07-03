@@ -2,6 +2,9 @@ package ai.visient.profile.tracker.impl.entity.util;
 
 import lombok.Getter;
 
+/**
+ * Axis-aligned bounding box implementation
+ */
 @Getter
 public class BoundingBox {
     public double minX;
@@ -59,15 +62,6 @@ public class BoundingBox {
 
     public double posZ() {
         return (maxZ + minZ) / 2.0;
-    }
-
-    public void set(BoundingBox copy) {
-        minX = copy.minX;
-        minY = copy.minY;
-        minZ = copy.minZ;
-        maxX = copy.maxX;
-        maxY = copy.maxY;
-        maxZ = copy.maxZ;
     }
 
     public void set(double minX, double minY, double minZ,

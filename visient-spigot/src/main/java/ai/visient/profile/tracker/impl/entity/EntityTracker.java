@@ -23,6 +23,10 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         super(profile);
     }
 
+    /**
+     * Route packets through the entity tracker.
+     * @param packet NMS packet wrapper
+     */
     @Override
     public synchronized void process(WrappedPacket packet) {
         if (packet instanceof SPacketEntity) {
@@ -50,6 +54,13 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         }
     }
 
+    /**
+     * Update entity tracked position using relative move packet.
+     * @param entityId the entity ID
+     * @param dx compressed server delta X
+     * @param dy compressed server delta Y
+     * @param dz compressed server delta Z
+     */
     private void handleRelativeMove(int entityId, int dx, int dy, int dz) {
         TrackedEntity entity = entityMap.get(entityId);
         if (entity == null) return;
@@ -82,6 +93,10 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         );
     }
 
+    /**
+     * Add a newly spawned player to the tracker
+     * @param wrapper NMS packet wrapper
+     */
     private void handleSpawnPlayer(SPacketSpawnPlayer wrapper) {
         if (wrapper.getEntityId() == profile.getPlayer().getEntityId()) {
             return;
@@ -99,12 +114,19 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         );
     }
 
+    /**
+     * Remove a despawned player from the tracker
+     * @param wrapper NMS packet wrapper
+     */
     private void handleEntityDestroy(SPacketEntityDestroy wrapper) {
         for (int id : wrapper.getEntities()) {
             entityMap.remove(id);
         }
     }
 
+    /**
+     * Handle transaction split noise by containing all possible hitboxes into one large hitbox
+     */
     private void confirmBoundingBoxes() {
         for (TrackedEntity entity : entityMap.values()) {
             if (entity.potential != null) {
@@ -113,6 +135,15 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         }
     }
 
+    /**
+     * Uses double transaction to properly track packet reception. Queue an update to the tracked entity hitbox.
+     * @param entity the tracked entity
+     * @param x position X
+     * @param y position Y
+     * @param z position Z
+     * @param width width of the player
+     * @param height height of the player
+     */
     private void queueConfirmBounds(TrackedEntity entity, double x, double y, double z, double width, double height) {
         BoundingBox confirming = new BoundingBox(
                 x - width, y, z - width,
@@ -128,6 +159,10 @@ public class EntityTracker extends Tracker implements PacketHandler, PostPacketH
         );
     }
 
+    /**
+     * Reverse engineered from the game, handle linear interpolation post client tick.
+     * @param packet NMS packet wrapper
+     */
     @Override
     public void postProcess(WrappedPacket packet) {
         if (packet instanceof CPacketFlying) {

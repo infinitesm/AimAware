@@ -14,6 +14,7 @@ import java.util.Map;
 @Getter
 public class TransactionTracker extends Tracker implements PacketHandler {
 
+    // Transactional data holding maps
     private final Map<Short, Long> transactionTimestamps = new HashMap<>();
     private final Map<Short, Runnable> pendingActions = new HashMap<>();
 
@@ -24,6 +25,10 @@ public class TransactionTracker extends Tracker implements PacketHandler {
         super(profile);
     }
 
+    /**
+     * Packet router for transaction tracker
+     * @param packet NMS packet wrapper
+     */
     @Override
     public void process(WrappedPacket packet) {
         if (packet instanceof CPacketTransaction) {
@@ -36,6 +41,10 @@ public class TransactionTracker extends Tracker implements PacketHandler {
         }
     }
 
+    /**
+     * Calculate ping and execute any queued transaction-related actions
+     * @param wrapper NMS packet wrapper
+     */
     private void handleClientTransaction(CPacketTransaction wrapper) {
         short id = wrapper.getActionNumber();
 
@@ -70,6 +79,10 @@ public class TransactionTracker extends Tracker implements PacketHandler {
         incrementTransactionId();
     }
 
+    /**
+     * Increment the transaction ID.
+     * TODO: You usually want to limit to a range to avoid clashing with other plugins.
+     */
     private void incrementTransactionId() {
         currentTransactionId++;
         if (currentTransactionId == Short.MIN_VALUE) {

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CommandManager implements CommandExecutor {
@@ -56,7 +55,7 @@ public class CommandManager implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            player.sendMessage("§cUsage: /" + label + " <subcommand>");
+            profile.message("&cUsage: /" + label + " <subcommand>");
             return true;
         }
 
@@ -64,7 +63,7 @@ public class CommandManager implements CommandExecutor {
         CommandHandler handler = subcommands.get(sub);
 
         if (handler == null) {
-            player.sendMessage("§cUnknown subcommand: " + sub);
+            profile.message("&cUnknown subcommand: " + sub);
             return true;
         }
 

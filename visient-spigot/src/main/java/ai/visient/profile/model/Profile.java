@@ -8,10 +8,14 @@ import ai.visient.profile.tracker.manager.TrackerManager;
 import ai.visient.network.packet.manager.PacketManager;
 import ai.visient.network.packet.wrapper.inbound.CPacketFlying;
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+/**
+ * Holds all player related classes and fields.
+ */
 @Getter
 public class Profile {
 
@@ -55,5 +59,12 @@ public class Profile {
 
     public <T extends Tracker> T  getTracker(Class<T> klass) {
         return trackerManager.getTrackerMap().getInstance(klass);
+    }
+
+    public void message(String message, Object... args) {
+        message = String.format(message, args);
+        message = ChatColor.translateAlternateColorCodes('&', message);
+
+        player.sendMessage(message);
     }
 }

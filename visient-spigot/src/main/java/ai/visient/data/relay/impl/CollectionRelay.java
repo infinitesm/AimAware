@@ -3,6 +3,7 @@ package ai.visient.data.relay.impl;
 import ai.visient.debug.DebugUtil;
 import ai.visient.network.client.AsyncJsonClient;
 import ai.visient.profile.model.Profile;
+import ai.visient.profile.tracker.impl.info.InfoTracker;
 import org.apache.http.HttpResponse;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.util.EntityUtils;
@@ -19,6 +20,7 @@ public class CollectionRelay {
 
     private final Profile profile;
     private final AsyncJsonClient asyncJsonClient;
+    private final InfoTracker infoTracker;
 
     private Map<String, Double> latestFeatures;
     private Map<String, List<Double>> latestSignals;
@@ -26,29 +28,32 @@ public class CollectionRelay {
     public CollectionRelay(Profile profile) {
         this.profile = profile;
         this.asyncJsonClient = profile.getPlugin().getAsyncJsonClient();
+        this.infoTracker = profile.getTracker(InfoTracker.class);
     }
 
     public void handleFeatures(Map<String, Double> features) {
         this.latestFeatures = features;
-        postIfReady();
+        post();
     }
 
     public void handleSignals(Map<String, List<Double>> signals) {
         this.latestSignals = signals;
-        postIfReady();
+        post();
     }
 
     /**
      * Combines signals + features and posts to the server
      * once both are available.
      */
-    private void postIfReady() {
+    private void post() {
         if (latestFeatures == null || latestSignals == null) {
             return;
         }
 
         JSONObject json = new JSONObject();
+
         json.put("uuid", profile.getUuid());
+        json.put("config", infoTracker.getCollectionConfig());
         json.put("signals", new JSONObject(latestSignals));
         json.put("features", new JSONObject(latestFeatures));
 
@@ -58,8 +63,8 @@ public class CollectionRelay {
                 try {
                     String responseBody = EntityUtils.toString(response.getEntity());
                     DebugUtil.broadcast(
-                            "Collection data saved for player %s → Server responded: %s%n",
-                            profile.getUuid(),
+                            "Collection data saved for config %s → Server responded: %s%n",
+                            infoTracker.getCollectionConfig(),
                             responseBody
                     );
                 } catch (Exception e) {
