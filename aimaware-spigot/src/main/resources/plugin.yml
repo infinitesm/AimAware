@@ -1,0 +1,10 @@
+name: AimAware
+version: '${project.version}'
+main: ai.aimaware.AimAwarePlugin
+authors: [ infiniteSM ]
+description: Prototype machine learning aimbot detection.
+commands:
+  aimaware:
+    description: AimAware command API
+    usage: /<command> <subcommand>
+

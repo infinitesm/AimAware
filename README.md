@@ -1,19 +1,19 @@
 # AimAware
 
-AimAware is a prototype machine learning pipeline for real-time detection of aimbot behavior primarily in Minecraft 1.8, concept applicable to other versions & games. It analyzes player aiming patterns to distinguish human users from automated aiming software. Visient operates as an end-to-end ML detection prototype, from data collection to live inference.
+AimAware is a prototype machine learning pipeline for real-time detection of aimbot behavior primarily in Minecraft 1.8, concept applicable to other versions & games. It analyzes player aiming patterns to distinguish human users from automated aiming software. AimAware operates as an end-to-end ML detection prototype, from data collection to live inference.
 
 ---
 
 ## Project Structure
 
 ```
-Visient/
-├── visient-training/
-│     ├── visient_model.pkl
-│     ├── visient_scaler.pkl
+AimAware/
+├── aimaware-training/
+│     ├── aimaware_model.pkl
+│     ├── aimaware_scaler.pkl
 │     ├── trained_feature_order.pkl
-│     └── visient_data.json
-└── visient-server/
+│     └── aimaware_data.json
+└── aimaware-server/
       └── server.py
 ```
 
@@ -42,8 +42,8 @@ Visient/
 1. Clone the repository:
 
     ```
-    git clone https://github.com/yourusername/Visient.git
-    cd Visient
+    git clone https://github.com/yourusername/AimAware.git
+    cd AimAware
     ```
 
 2. Create and activate a virtual environment:
@@ -59,9 +59,9 @@ Visient/
     pip install -r requirements.txt
     ```
 
-4. Ensure the following model files exist in `visient-training/`:
-   - visient_model.pkl
-   - visient_scaler.pkl
+4. Ensure the following model files exist in `aimaware-training/`:
+   - aimaware_model.pkl
+   - aimaware_scaler.pkl
    - trained_feature_order.pkl
 
 *(If these files are unavailable, you will need to train new models or obtain them separately.)*
@@ -70,7 +70,7 @@ Visient/
 
 ## Running the server
 
-From the `visient-server/` directory:
+From the `aimaware-server/` directory:
 
 ```
 uvicorn server:app --reload
@@ -131,7 +131,7 @@ Example request:
 Collected data is saved to:
 
 ```
-visient-training/visient_data.json
+aimaware-training/aimaware_data.json
 ```
 
 ---
