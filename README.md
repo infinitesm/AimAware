@@ -1,6 +1,6 @@
-# Visient
+# AimAware
 
-Visient is a prototype machine learning pipeline for real-time detection of aimbot behavior primarily in Minecraft 1.8, concept applicable to other versions & games. It analyzes player aiming patterns to distinguish human users from automated aiming software. Visient operates as an end-to-end ML detection prototype, from data collection to live inference.
+AimAware is a prototype machine learning pipeline for real-time detection of aimbot behavior primarily in Minecraft 1.8, concept applicable to other versions & games. It analyzes player aiming patterns to distinguish human users from automated aiming software. Visient operates as an end-to-end ML detection prototype, from data collection to live inference.
 
 ---
 
