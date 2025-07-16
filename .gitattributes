@@ -1,0 +1,2 @@
+# Force IPython notebooks to be classified as Python instead of Jupyter Notebook
+*.ipynb linguist-language=Python
