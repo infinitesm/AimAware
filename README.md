@@ -4,23 +4,19 @@ AimAware is a prototype machine learning pipeline for real-time detection of aim
 
 ## Q: "Why prototype using Minecraft 1.8? Isn't that a 10 year old version?"
 
-A: Minecraft 1.8 is over 10 years old, and that's what makes it so great for prototyping. It is a very well researched version with dozens of public resources and anti-cheat systems supporting it. Many servers today still run on Minecraft 1.8, for it's performance and widespread support. I started coding with 1.8 in 2018, so it is an domain where I have great development knowledge. As for other games, aiming behaviour is largely similar, even to FPS games like Counter Strike, the only obstacle is porting the pipeline to work with the protocol of the specified game.
+Minecraft 1.8 is over 10 years old, and that's what makes it so great for prototyping. It is a very well researched version with dozens of public resources and anti-cheat systems supporting it. Many servers today still run on Minecraft 1.8, for it's performance and widespread support. I started coding with 1.8 in 2018, so it is an domain where I have great development knowledge. As for other games, aiming behaviour is largely similar, even to FPS games like Counter Strike, the only obstacle is porting the pipeline to work with the protocol of the specified game.
 
 ## Q: "How can you be sure it will work with other games?"
 
-A: As for other games, aiming behaviour is largely similar, even to FPS games like Counter Strike, the only obstacle is porting the pipeline to work with the protocol of the specified game.
+As for other games, aiming behaviour is largely similar, even to FPS games like Counter Strike, the only obstacle is porting the pipeline to work with the protocol of the specified game.
 
 ## Q: "Okay, but aren't heuristic detections more reliable anyway?"
 
-A: No, human made heuristics are not more reliable, simply put. Human made heuristics are based on pseudostatistics, value patching, and arbitrary thresholding, and in most cases, simply theorized based on a singular players' data. ML approaches are much more robust, since production systems take in 100s to 1000s of players aim patterns, and uses mathematically sound approaches to maximize functionality.
+No, human made heuristics are not more reliable, simply put. Human made heuristics are based on pseudostatistics, value patching, and arbitrary thresholding, and in most cases, simply theorized based on a singular players' data. ML approaches are much more robust, since production systems take in 100s to 1000s of players aim patterns, and uses mathematically sound approaches to maximize functionality.
 
 ## Q: "That makes sense, but the Minecraft anti-cheating industry has seen several ML approaches over the last 13 years and none have worked. What makes AimAware different?"
 
-A: Unlike old ML approaches, AimAware differs greatly in what data is collected. AimAware uses a precise entity tracking system, popularized in 2020, to track exactly where aim targets are on the player's screen.
-
-For a direct comparison of precision:
-- AimAware latency compensation: 1*10^-7 blocks
-- Classical "rewind-time" latency compensation: 0.5 blocks
+Unlike old ML approaches, AimAware differs greatly in what data is collected. AimAware uses a precise entity tracking system, popularized in 2020, to track exactly where aim targets are on the player's screen.
 
 Combined with a raytrace system reverse-engineered from the client, AimAware knows exactly where the target is on your screen, and exactly where you are aiming on the target. This makes the raw quality of data fed into AimAware much higher than previous approaches.
 
@@ -28,11 +24,12 @@ For a direct comparison of data quality:
 
 |                   | Old ML designs                                      | AimAware                                                                                  |
 |-------------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------|
-| Entity tracking   | Not used or inaccurate                              | Tracked with 1×10⁻⁸ blocks of precision                                                   |
+| Entity tracking   | Not used or inaccurate (~0.5 blocks of precision)   | Tracked with 1×10⁻⁸ blocks of precision                                                   |
 | Ray tracing       | Not used                                            | Reverse engineered from the client                                                        |
 | Tracking context  | Not used or inaccurate                              | Knows exactly where you are aiming on target over time no matter the latency              |
 | Features          | Rotational data (kinematics, raw values)            | Extracts meaningful statistical features from rotational/tracking derivatives             |
 | Performance       | False positives and lackluster detection            | 85% accuracy and proven to detect 11 unique aimbots                                       |
+
 
 ---
 
