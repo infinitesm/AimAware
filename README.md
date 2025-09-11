@@ -61,7 +61,7 @@ AimAware/
   - zero crossings
   - etc
 - Trained on human and aimbot gameplay data
-- Achieves approximately 80% cross-validation accuracy
+- Achieves approximately 85% cross-validation accuracy
 - API endpoint for JSON-based data collection
 
 ---
