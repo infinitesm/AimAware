@@ -28,7 +28,7 @@ For a direct comparison of data quality:
 | Ray tracing       | Not used                                            | Reverse engineered from the client                                                        |
 | Tracking context  | Not used or inaccurate                              | Knows exactly where you are aiming on target over time no matter the latency              |
 | Features          | Rotational data (kinematics, raw values)            | Extracts meaningful statistical features from rotational/tracking derivatives             |
-| Performance       | False positives and lackluster detection            | 85% accuracy and proven to detect 11 unique aimbots                                       |
+| Performance       | False positives and lackluster detection            | 88% F1-score and proven to detect 11 unique aimbots                                       |
 
 
 ---
@@ -61,7 +61,7 @@ AimAware/
   - zero crossings
   - etc
 - Trained on human and aimbot gameplay data
-- Achieves approximately 85% cross-validation accuracy
+- Achieves approximately 88% F1-score
 - API endpoint for JSON-based data collection
 
 ---
